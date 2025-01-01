@@ -35,6 +35,14 @@ if __name__ == "__main__":
     try:
         data = int(input("Select module: "))
         if data == 1:
+            fullColor(strip, Color(255, 0, 0), wait_ms=10, br=255)
+            time.sleep(2)
+            strip.setBrightness(0)
+            time.sleep(1)
+            for index, dat in enumerate(strip.getPixels()):
+                if dat > 0:
+                    strip.setPixelColor(index, Color(0, 0, 0))
+            strip.show()
             print('Snake with fading animation.')
             bri = 5
     
@@ -49,7 +57,15 @@ if __name__ == "__main__":
                     break
         
         elif data == 2:
-            print('Full color with changing brightness.')
+            print('Full color with changing brightness. Access: GOOD')
+            fullColor(strip, Color(255, 0, 0), wait_ms=10, br=255)
+            time.sleep(2)
+            strip.setBrightness(0)
+            time.sleep(1)
+            for index, dat in enumerate(strip.getPixels()):
+                if dat > 0:
+                    strip.setPixelColor(index, Color(0, 0, 0))
+            strip.show()
             bri = 5
             color = Color(0, 0, 255)  # Красный цвет
             while True:
@@ -72,7 +88,12 @@ if __name__ == "__main__":
                 for bri in range(120, 30, -1):
                     fullColor(strip, Color(255, 0, 0), wait_ms=10, br=bri)
                     time.sleep(0.001)
-                
+        else:
+            print("Wrong number")
+            while True:
+                fullColor(strip, Color(0, 255, 0), wait_ms=10, br=255)
+                time.sleep(5)
+                raise KeyboardInterrupt
 
             # while bri <= 255:
             #     fullColor(strip, color, wait_ms=50, br=bri)
