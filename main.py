@@ -65,7 +65,7 @@ if __name__ == "__main__":
             while bri != 255:
                 snakeWithFade(strip, Color(rand_number(), rand_number(), rand_number()), wait_ms=0.01, tail_length=100, br=bri)
                 time.sleep(0.1)
-                bri += 10 # Зеленая змейка с хвостом
+                bri += 10
                 
                 print(f"BRI now: {bri}")
                 if bri == 255:

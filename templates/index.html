@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LED Control</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    #color-picker {
+      width: 200px;
+      height: 200px;
+      cursor: pointer;
+    }
+    #color-display {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>LED Control</h1>
+  <input type="color" id="color-picker">
+  <div id="color-display">Selected Color: #ffffff</div>
+
+  <script>
+    const colorPicker = document.getElementById("color-picker");
+    const colorDisplay = document.getElementById("color-display");
+
+    // Обработчик выбора цвета
+    colorPicker.addEventListener("input", () => {
+      const selectedColor = colorPicker.value;
+      colorDisplay.textContent = `Selected Color: ${selectedColor}`;
+
+      fetch("/set_color", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ color: selectedColor }),
+      });
+    });
+  </script>
+</body>
+</html>
