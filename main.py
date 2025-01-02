@@ -1,3 +1,4 @@
+import random
 import time
 from rpi_ws281x import Adafruit_NeoPixel
 from rpi_ws281x import Color
@@ -28,7 +29,22 @@ def fullColor(strip, color, wait_ms=50, br=255):
 
     strip.setBrightness(br)
     strip.show()
+
+
+def oddPixels(strip, color_odd, color_non_odd, wait_ms=50, br=255):
+    for i in range(LED_COUNT):
+        if i%2 == 0:
+            strip.setPixelColor(i, color_odd)
+        else:
+            strip.setPixelColor(i, color_non_odd)
+    strip.setBrightness(br)
+    strip.show()
     time.sleep(wait_ms * 0.001)
+
+def rand_number() -> int:
+    random_number = random.randint(1, 256)
+    print(random_number)
+    return random_number
 
 
 if __name__ == "__main__":
@@ -47,7 +63,7 @@ if __name__ == "__main__":
             bri = 5
     
             while bri != 255:
-                snakeWithFade(strip, Color(255, 0, 0), wait_ms=0.01, tail_length=100, br=bri)
+                snakeWithFade(strip, Color(rand_number(), rand_number(), rand_number()), wait_ms=0.01, tail_length=100, br=bri)
                 time.sleep(0.1)
                 bri += 10 # Зеленая змейка с хвостом
                 
@@ -66,43 +82,29 @@ if __name__ == "__main__":
                 if dat > 0:
                     strip.setPixelColor(index, Color(0, 0, 0))
             strip.show()
-            bri = 5
-            color = Color(0, 0, 255)  # Красный цвет
             while True:
                 # fullColor(strip, Color(0, 0, 255), wait_ms=50, br=120)
                 for bri in range(30, 120):
                     fullColor(strip, Color(0, 255, 0), wait_ms=10, br=bri)
-                    time.sleep(0.001)
+                    time.sleep(0.1)
                 for bri in range(120, 30, -1):
                     fullColor(strip, Color(0, 255, 0), wait_ms=10, br=bri)
-                    time.sleep(0.001)
-                for bri in range(30, 120):
-                    fullColor(strip, Color(0, 0, 255), wait_ms=10, br=bri)
-                    time.sleep(0.001)
-                for bri in range(120, 30, -1):
-                    fullColor(strip, Color(0, 0, 255), wait_ms=10, br=bri)
-                    time.sleep(0.001)
-                for bri in range(30, 120):
-                    fullColor(strip, Color(255, 0, 0), wait_ms=10, br=bri)
-                    time.sleep(0.001)
-                for bri in range(120, 30, -1):
-                    fullColor(strip, Color(255, 0, 0), wait_ms=10, br=bri)
-                    time.sleep(0.001)
+                    time.sleep(0.1)
+        elif data == 3:
+            while True:
+                time.sleep(0.7)
+                clr = Color(rand_number(), rand_number(), rand_number())
+                clr_two = Color(rand_number(), rand_number(), rand_number())
+                print("---iteration down---")
+                oddPixels(strip, clr, clr_two, wait_ms=10, br=255)
+
         else:
             print("Wrong number")
             while True:
                 fullColor(strip, Color(0, 255, 0), wait_ms=10, br=255)
                 time.sleep(5)
                 raise KeyboardInterrupt
-
-            # while bri <= 255:
-            #     fullColor(strip, color, wait_ms=50, br=bri)
-            #     bri += 10  # Увеличиваем яркость
-                
-            #     print(f"Brightness now: {bri}")
-            #     if bri == 255:
-            #         print("all good")
-            #         bri -= 40
+            
     except KeyboardInterrupt:
         strip.setBrightness(0)
         for index, dat in enumerate(strip.getPixels()):
