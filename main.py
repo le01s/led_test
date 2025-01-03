@@ -23,6 +23,34 @@ def snakeWithFade(strip, color, wait_ms=50, tail_length=10, br=255):
         strip.show()
         time.sleep(wait_ms * 0.001)
 
+
+
+def manySnakesWithFade(strip, color, wait_ms=50, tail_length=10, br=255, gap=10):
+    num_snakes = int((LED_COUNT + tail_length) / (tail_length + gap))
+    
+    positions = [i * (tail_length + gap) for i in range(num_snakes)]
+
+    for i in range(LED_COUNT + tail_length):
+        strip.setBrightness(br)
+        
+        for j in range(LED_COUNT):
+            strip.setPixelColor(j, Color(0, 0, 0))
+
+        for snake in range(num_snakes):
+            start_pos = positions[snake]
+
+            for j in range(tail_length):
+                pos = (start_pos + i - j) % LED_COUNT
+                if i - j >= 0:
+                    strip.setPixelColor(pos, color)
+
+        strip.show()
+        time.sleep(wait_ms * 0.001)
+
+
+
+
+
 def fullColor(strip, color, wait_ms=50, br=255):
     for i in range(LED_COUNT):
         strip.setPixelColor(i, color)
@@ -52,7 +80,7 @@ if __name__ == "__main__":
         data = int(input("Select module: "))
         if data == 1:
             fullColor(strip, Color(255, 0, 0), wait_ms=10, br=255)
-            time.sleep(2)
+            time.sleep(0.1)
             strip.setBrightness(0)
             time.sleep(1)
             for index, dat in enumerate(strip.getPixels()):
@@ -97,7 +125,28 @@ if __name__ == "__main__":
                 clr_two = Color(rand_number(), rand_number(), rand_number())
                 print("---iteration down---")
                 oddPixels(strip, clr, clr_two, wait_ms=10, br=255)
-
+        elif data == 4:
+            while True:
+                fullColor(strip, Color(255, 0, 0), wait_ms=10, br=255)
+                time.sleep(0.5)
+                strip.setBrightness(0)
+                time.sleep(0.1)
+                for index, dat in enumerate(strip.getPixels()):
+                    if dat > 0:
+                        strip.setPixelColor(index, Color(0, 0, 0))
+                strip.show()
+                print('Many snakes')
+                bri = 5
+        
+                while bri != 255:
+                    manySnakesWithFade(strip, Color(rand_number(), rand_number(), rand_number()), wait_ms=10, tail_length=10, br=bri, gap=20)
+                    time.sleep(0.1)
+                    bri += 10
+                    
+                    print(f"BRI now: {bri}")
+                    if bri == 255:
+                        print("all good")
+                        break
         else:
             print("Wrong number")
             while True:
