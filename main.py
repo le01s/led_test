@@ -3,19 +3,22 @@ import time
 from rpi_ws281x import Adafruit_NeoPixel
 from rpi_ws281x import Color
 
-LED_COUNT      = 400      # Количество светодиодов в ленте
-LED_PIN        = 18      # GPIO пин, к которому вы подсоединяете светодиодную ленту
-LED_FREQ_HZ    = 800000  # Частота несущего сигнала (обычно 800 кГц)
-LED_DMA        = 10      # DMA-канал для генерации сигнала (обычно 10)
+LED_COUNT = 400  # Количество светодиодов в ленте
+LED_PIN = 18  # GPIO пин, к которому вы подсоединяете светодиодную ленту
+LED_FREQ_HZ = 800000  # Частота несущего сигнала (обычно 800 кГц)
+LED_DMA = 10  # DMA-канал для генерации сигнала (обычно 10)
 # LED_BRIGHTNESS = 255     # Яркость: 0 - наименьшая, 255 - наибольшая
-LED_INVERT     = False   # True для инвертирования сигнала (для подключения через NPN транзистор)
-LED_CHANNEL    = 0       # '1' для GPIO 13, 19, 41, 45 или 53
+LED_INVERT = (
+    False  # True для инвертирования сигнала (для подключения через NPN транзистор)
+)
+LED_CHANNEL = 0  # '1' для GPIO 13, 19, 41, 45 или 53
 
 strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT)
 strip.begin()
 
+
 def snakeWithFade(strip, color, wait_ms=50, tail_length=10, br=255):
-    for i in range(LED_COUNT+tail_length):
+    for i in range(LED_COUNT + tail_length):
         strip.setBrightness(br)
         strip.setPixelColor(i, color)
         for j in range(i - tail_length, 0, -1):
@@ -24,15 +27,14 @@ def snakeWithFade(strip, color, wait_ms=50, tail_length=10, br=255):
         time.sleep(wait_ms * 0.001)
 
 
-
 def manySnakesWithFade(strip, color, wait_ms=50, tail_length=10, br=255, gap=10):
     num_snakes = int((LED_COUNT + tail_length) / (tail_length + gap))
-    
+
     positions = [i * (tail_length + gap) for i in range(num_snakes)]
 
     for i in range(LED_COUNT + tail_length):
         strip.setBrightness(br)
-        
+
         for j in range(LED_COUNT):
             strip.setPixelColor(j, Color(0, 0, 0))
 
@@ -48,9 +50,6 @@ def manySnakesWithFade(strip, color, wait_ms=50, tail_length=10, br=255, gap=10)
         time.sleep(wait_ms * 0.001)
 
 
-
-
-
 def fullColor(strip, color, wait_ms=50, br=255):
     for i in range(LED_COUNT):
         strip.setPixelColor(i, color)
@@ -61,13 +60,14 @@ def fullColor(strip, color, wait_ms=50, br=255):
 
 def oddPixels(strip, color_odd, color_non_odd, wait_ms=50, br=255):
     for i in range(LED_COUNT):
-        if i%2 == 0:
+        if i % 2 == 0:
             strip.setPixelColor(i, color_odd)
         else:
             strip.setPixelColor(i, color_non_odd)
     strip.setBrightness(br)
     strip.show()
     time.sleep(wait_ms * 0.001)
+
 
 def rand_number() -> int:
     random_number = random.randint(1, 256)
@@ -87,21 +87,27 @@ if __name__ == "__main__":
                 if dat > 0:
                     strip.setPixelColor(index, Color(0, 0, 0))
             strip.show()
-            print('Snake with fading animation.')
+            print("Snake with fading animation.")
             bri = 5
-    
+
             while bri != 255:
-                snakeWithFade(strip, Color(rand_number(), rand_number(), rand_number()), wait_ms=0.01, tail_length=100, br=bri)
+                snakeWithFade(
+                    strip,
+                    Color(rand_number(), rand_number(), rand_number()),
+                    wait_ms=0.01,
+                    tail_length=100,
+                    br=bri,
+                )
                 time.sleep(0.1)
                 bri += 10
-                
+
                 print(f"BRI now: {bri}")
                 if bri == 255:
                     print("all good")
                     break
-        
+
         elif data == 2:
-            print('Full color with changing brightness. Access: GOOD')
+            print("Full color with changing brightness. Access: GOOD")
             fullColor(strip, Color(255, 0, 0), wait_ms=10, br=255)
             time.sleep(2)
             strip.setBrightness(0)
@@ -135,14 +141,21 @@ if __name__ == "__main__":
                     if dat > 0:
                         strip.setPixelColor(index, Color(0, 0, 0))
                 strip.show()
-                print('Many snakes')
+                print("Many snakes")
                 bri = 5
-        
+
                 while bri != 255:
-                    manySnakesWithFade(strip, Color(rand_number(), rand_number(), rand_number()), wait_ms=10, tail_length=10, br=bri, gap=20)
+                    manySnakesWithFade(
+                        strip,
+                        Color(rand_number(), rand_number(), rand_number()),
+                        wait_ms=10,
+                        tail_length=10,
+                        br=bri,
+                        gap=20,
+                    )
                     time.sleep(0.1)
                     bri += 10
-                    
+
                     print(f"BRI now: {bri}")
                     if bri == 255:
                         print("all good")
@@ -153,12 +166,12 @@ if __name__ == "__main__":
                 fullColor(strip, Color(0, 255, 0), wait_ms=10, br=255)
                 time.sleep(5)
                 raise KeyboardInterrupt
-            
+
     except KeyboardInterrupt:
         strip.setBrightness(0)
         for index, dat in enumerate(strip.getPixels()):
             if dat > 0:
                 strip.setPixelColor(index, Color(0, 0, 0))
-                
+
         print(strip.getPixels())
         strip.show()
