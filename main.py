@@ -29,10 +29,10 @@ def snakeWithFade(strip, color, wait_ms=50, tail_length=10, br=255):
 
 def manySnakesWithFade(strip, color, wait_ms=50, tail_length=10, br=255, gap=10):
     num_snakes = int((LED_COUNT + tail_length) / (tail_length + gap))
-
+    
     positions = [i * (tail_length + gap) for i in range(num_snakes)]
 
-    for i in range(LED_COUNT + tail_length):
+    while True:
         strip.setBrightness(br)
 
         for j in range(LED_COUNT):
@@ -42,12 +42,15 @@ def manySnakesWithFade(strip, color, wait_ms=50, tail_length=10, br=255, gap=10)
             start_pos = positions[snake]
 
             for j in range(tail_length):
-                pos = (start_pos + i - j) % LED_COUNT
-                if i - j >= 0:
-                    strip.setPixelColor(pos, color)
+                pos = (start_pos - j) % LED_COUNT
+                strip.setPixelColor(pos, color)
 
+            positions[snake] = (start_pos + 1) % LED_COUNT
+
+        # Отобразить результат
         strip.show()
         time.sleep(wait_ms * 0.001)
+
 
 
 def fullColor(strip, color, wait_ms=50, br=255):
@@ -142,24 +145,16 @@ if __name__ == "__main__":
                         strip.setPixelColor(index, Color(0, 0, 0))
                 strip.show()
                 print("Many snakes")
-                bri = 5
 
-                while bri != 255:
+                while True:
                     manySnakesWithFade(
                         strip,
                         Color(rand_number(), rand_number(), rand_number()),
                         wait_ms=10,
-                        tail_length=10,
-                        br=bri,
+                        tail_length=30,
+                        br=120,
                         gap=20,
                     )
-                    time.sleep(0.1)
-                    bri += 10
-
-                    print(f"BRI now: {bri}")
-                    if bri == 255:
-                        print("all good")
-                        break
         else:
             print("Wrong number")
             while True:
